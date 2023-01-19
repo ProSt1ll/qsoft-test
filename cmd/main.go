@@ -1,18 +1,35 @@
 package main
 
 import (
+	"flag"
 	"github.com/ProSt1ll/qsoft-test/internal"
 	"github.com/gin-gonic/gin"
+	"log"
 )
 
+var (
+	Port string
+)
+
+func init() {
+	//flags
+	flag.StringVar(&Port, "Port", "8080", "server port")
+	flag.Parse()
+}
+
 func main() {
+	gin.SetMode(gin.ReleaseMode)
 	router := gin.New()
 
+	//middlewares settings
 	router.Use(gin.Logger())
+	router.Use(gin.ErrorLogger())
 	router.Use(gin.Recovery())
 	router.Use(internal.PingPong)
 
-	router.GET("/when/:year", internal.HandlerWhen)
+	//handlers settings
+	router.Any("/when/:year", internal.HandlerWhen)
 
-	router.Run("localhost:" + "8080")
+	//start server
+	log.Fatal(router.Run("localhost:" + Port))
 }
