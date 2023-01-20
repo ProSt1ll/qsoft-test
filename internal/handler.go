@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -8,9 +9,6 @@ import (
 )
 
 func HandlerWhen(c *gin.Context) {
-	var answer int
-	var answerStr string
-
 	//parse request path
 	year, err := strconv.Atoi(c.Params.ByName("year"))
 	if err != nil {
@@ -20,18 +18,16 @@ func HandlerWhen(c *gin.Context) {
 	timeReq := time.Date(year, 1, 1, 0, 0, 0, 0, time.UTC)
 
 	//calculate difference
+	var answer int
+	var answerStr string
 	if timeReq.After(time.Now()) {
 		answer = (timeReq.Year() - time.Now().Year()) * 365
-		answerStr = "Day left: " + strconv.Itoa(answer)
-
-		//answer = time.Until(timer)
-		//Until and Since return struct Duration
+		answerStr = fmt.Sprintf("Day left: %s", strconv.Itoa(answer))
+		//Until and Since from pkg time returns struct Duration
 		//that can't be longer than 290 years
-
 	} else {
 		answer = (time.Now().Year() - timeReq.Year()) * 365
-		answerStr = "Day gone: " + strconv.Itoa(answer)
-		//answer = time.Since(timer)
+		answerStr = fmt.Sprintf("Day gone: %s", strconv.Itoa(answer))
 	}
 
 	c.String(http.StatusOK, answerStr)

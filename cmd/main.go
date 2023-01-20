@@ -7,13 +7,11 @@ import (
 	"log"
 )
 
-var (
-	Port string
-)
+var port string
 
 func init() {
 	//flags
-	flag.StringVar(&Port, "Port", "8080", "server port")
+	flag.StringVar(&port, "Port", "8080", "server port")
 	flag.Parse()
 }
 
@@ -31,5 +29,5 @@ func main() {
 	router.Any("/when/:year", internal.HandlerWhen)
 
 	//start server
-	log.Fatal(router.Run("localhost:" + Port))
+	log.Fatal(router.Run("localhost:" + port))
 }
